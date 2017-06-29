@@ -27,18 +27,16 @@
         jQuery.getJSON('http://starblast.io/rankings.json', function (rankings) {
             jQuery.getJSON('http://starblast.io/simstatus.json', function (data) {
                 data.forEach(function (value, index) {
-                    if (value.location == "America") {
                         value.systems.forEach(function (value, index) {
                             if (value.mode == "deathmatch") {
                                 addGame(value, rankings.ratings.America);
                             }
                         });
-                    }
                 });
             })
         });
 
-
+        
         function addGame(game,rankings) {
             //Fetch tempalte
             var template = $("#game_template").text();
@@ -46,7 +44,7 @@
             
             //Alter values in the virtual template markup.
             $tempalte.find(".game_link").attr("href", 'http://starblast.io/#' + game.id);
-            $tempalte.find(".game_server").text(game.name);
+            $tempalte.find(".game_server").text(game.location + ': ' + game.name);
             $tempalte.attr("data-game",game.id);
             
             //Fetch text
