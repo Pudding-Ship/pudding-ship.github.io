@@ -72,3 +72,9 @@ box-shadow: 0px 0px 40px 0px rgba(0,0,0,0.5);
                 margin-bottom: 10px;
                 vertical-align: top;
             }
+            
+            input[type=text] {
+                background: rgb(86, 33, 96);
+                border: none;
+                padding: 8px;
+            }

@@ -1,0 +1,252 @@
+<h1>STARBLAST ORACLE</h1>
+    This tool will print out the server settings of a starblast game. simply enter the url:
+    <input id="url" type=text size="35">
+    <div id="oracle_printout" class="box" style="white-space: pre;">
+       No printout available for the provided URL.
+    </div>
+    <script id="region_template" type="text/x-custom-template" >
+        <div class="region box list-box" data-region="" style="min-width: 300px;">
+            <h2 class="region_name"></h2>
+            <div class="region_games">
+            
+            </div>
+        </div>
+    </script>
+    <script id="game_template" type="text/x-custom-template" >
+        <div class="game" data-game="">
+            <a href="" class="game_link">
+                <h3 class="game_server"></h2>
+            </a>
+                <div class="game_players" style="margin-left: 15px;">
+
+                </div>
+        </div>
+    </script>
+    <script id="player_template" type="text/x-custom-template">
+        <div class="player" player-data="">
+            <b class="player_name"></b> (<span class="player_rank"></span>)
+        </div>
+    </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/engine.io-client/3.1.1/engine.io.js"></script>
+    </script>
+    
+        <script>
+    $(document).on('input change paste keyup mouseup','#url',function () {
+        starblastOracle($(this).val());
+    });
+    
+    
+    var stringConstructor = "test".constructor;
+    var arrayConstructor = [].constructor;
+    var objectConstructor = {}.constructor;
+
+    function idObj(object) {
+        if (object === null) {
+            return "null";
+        }
+        else if (object === undefined) {
+            return "undefined";
+        }
+        else if (object.constructor === stringConstructor) {
+            return "String";
+        }
+        else if (object.constructor === arrayConstructor) {
+            return "Array";
+        }
+        else if (object.constructor === objectConstructor) {
+            return "Object";
+        }
+        else {
+            return "don't know";
+        }
+    }
+    
+    function printObj (obj,depth) {
+        var output = '';
+        for (var property in obj) {
+            if (idObj(obj[property]) === "Object"){
+                objv = '\n' + printObj(obj[property],depth + 1) ;
+            } else {
+                objv = obj[property];
+            }
+            output += '\t'.repeat(depth) + property + ': ' + objv+'\n';
+        }
+        return output;
+    }
+    
+    function printServerReport(data) {
+        var output = printObj(data,0);
+        $("#oracle_printout").text(output);
+        console.log(output);
+    }
+    function starblastOracle(url) {
+        getServerIdAddr(url,function (id,addr) {
+              var socket = new eio.Socket(addr);
+              socket.on('open', function(){
+                socket.on("message",function(data){
+                    try {
+                        data = JSON.parse(data);
+                    } catch(err) {
+                    }
+
+                    console.log(data);
+                    switch (data.name) {
+                        case "welcome":
+                            //Wahoo!
+                            printServerReport(data.data)
+                            //
+                            
+                            return console.log(data.data);
+                        case "entered":
+                            return console.log(data.data);
+                        case "player_name":
+                            return console.log(data.data);
+                        case "modemsg":
+                            return console.log(data.data);
+                    }
+                    
+                });
+                socket.send(JSON.stringify({
+                    name: "join",
+                    data: {
+                        mode: "join",
+                        player_name: "SB_ORACLE",
+                        spectate:false,
+                        spectate_ship:1,
+                        hue: 276,
+                        preferred: parseInt(id),
+                        bonus: false,
+                        ecp_key: null,
+                        ecp_custom: {badge:"star",finish:"alloy",laser:"1"},
+                        create: false,
+                    },
+                }));
+                socket.send("ping");
+              });
+        
+        
+        });
+    }
+    function getServerIdAddr(url,cb) {
+        //check if is url
+        url_parts = /(https?:\/\/starblast\.io)\/?#([0-9]{2,4})@(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.?){4}\:[0-9]{4})?/g.exec(url);
+        if (url_parts != null) {
+            var server_id = url_parts[2];
+            var server_addr = url_parts[3];
+            cb(server_id,server_addr);
+        } else {
+            url_parts = /(https?:\/\/starblast\.io)\/?#([0-9]{2,4})/g.exec(url);
+            if (url_parts != null) {
+                var server_id = url_parts[2];
+                jQuery.getJSON('http://starblast.io/simstatus.json', function (data) {  
+                    data.forEach(function (value,index) {
+                        value.systems.forEach(function (value,index) {
+                            if (value.id == server_id) {
+                                cb(server_id,server_addr);
+                                return false;
+                            }
+                        });
+                    });
+                });
+            }
+        }
+        //get server ip
+    }
+    
+    jQuery.getJSON('http://starblast.io/simstatus.json', function (data) {  
+        var socket = new eio.Socket('45.32.193.42:3060');
+      socket.on('open', function(){
+        socket.send("ping");
+        socket.on("message",function(data){
+            console.log(data);
+            switch (data.name) {
+                case "welcome":
+                    return console.log(e.data);
+                case "entered":
+                    return console.log(e.data);
+                case "player_name":
+                    return console.log(e.data);
+                case "modemsg":
+                    return console.log(e.data);
+            }
+            
+        });
+      });
+    
+    });
+
+        
+    </script>
+    
+    <script>
+    (function(){
+        regions = {};
+        jQuery.getJSON('http://starblast.io/rankings.json', function (rankings) {
+            jQuery.getJSON('http://starblast.io/simstatus.json', function (data) {                
+                data.forEach(function (value, index) {
+                        addRegion (value,regions);
+                        var location = value.location;
+                        var addr = value.address;
+                        value.systems.forEach(function (value, index) {
+                            if (value.mode == "deathmatch") {
+                                console.log(addr);
+                                addGame(value, rankings.ratings[location],regions[location]);
+                            }
+                        });
+                });
+            })
+        });
+        function addRegion(region,regions) {
+            if (!(region.location in regions)) {
+                 //Fetch tempalte
+                var template = $("#region_template").text();
+                var $tempalte = $(template);
+                $tempalte.find(".region_name").text(region.location);
+                $tempalte.attr("data-region",region.location);
+                
+                regions[region.location] = $tempalte;
+                var $el = $("#region_list .region[data-region=" + region.location + "]");
+                if (!$el.length) {
+                    $("#region_list").append($tempalte);
+                } else {
+                    $el.replaceWith($tempalte);
+                }
+            }
+        }
+        
+        function addGame(game,rankings,region) {
+            //Fetch tempalte
+            var template = $("#game_template").text();
+            var $template = $(template);
+            
+            //Alter values in the virtual template markup.
+            $template.find(".game_link").attr("href", 'http://starblast.io/#' + game.id);
+            $template.find(".game_server").text(game.name);
+            $template.attr("data-game",game.id);
+            
+            //Fetch text
+            var p_template = $("#player_template").text();
+            game.players_list.forEach(function (value, index) {
+                //Find the player with the correct id.
+                ranked = rankings.filter(function (player) {
+                    return player.id == value;
+                })[0];
+                if (typeof ranked !== 'undefined') {
+                    //Create new virtual template.
+                    var $p_template = $(p_template);
+                    $p_template.find(".player_name").text(ranked.name);
+                    $p_template.find(".player_rank").text(~~(ranked.live_rating));
+                    //Attach the players template to the game template
+                    $template.find(".game_players").append($p_template);
+                }
+            });
+            
+            region.find(".region_games").append($template)
+            
+        }
+            setTimeout(arguments.callee, 60000);
+    })();
+    </script>
