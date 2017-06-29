@@ -17,13 +17,14 @@
     </script>
     <script id="player_template" type="text/x-custom-template">
         <div class="player" player-data="">
-            <b class="player_name"></b>
+            <b class="player_name"></b> (<span class="player_rank"></span>)
         </div>
     </script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"
             integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
             crossorigin="anonymous"></script>
     <script>
+    (function(){
         jQuery.getJSON('http://starblast.io/rankings.json', function (rankings) {
             jQuery.getJSON('http://starblast.io/simstatus.json', function (data) {
                 data.forEach(function (value, index) {
@@ -40,20 +41,31 @@
 
 
         function addGame(game,rankings) {
+            //Fetch tempalte
             var template = $("#game_template").text();
             var $tempalte = $(template);
+            
+            //Alter values in the virtual template markup.
             $tempalte.find(".game_link").attr("href", 'http://starblast.io/#' + game.id);
             $tempalte.find(".game_server").text(game.name);
             $tempalte.attr("data-game",game.id);
+            
+            //Fetch text
+            var p_template = $("#player_template").text();
             game.players_list.forEach(function (value, index) {
+                //Find the player with the correct id.
                 ranked = rankings.filter(function (player) {
                     return player.id == value;
                 })[0];
-                var p_template = $("#player_template").text();
+                //Create new virtual template.
                 var $p_template = $(p_template);
                 $p_template.find(".player_name").text(ranked.name);
+                $p_template.find(".player_rank").text(~~(ranked.live_rating));
+                //Attach the players template to the game template
                 $tempalte.find(".game_players").append($p_template);
             });
+            
+            //Either appends or replaces the game template
             var $el = $("#game_list .game[data-game=" + game.id + "]");
             if (!$el.length) {
                 $("#game_list").append($tempalte);
@@ -61,6 +73,8 @@
                 $el.replaceWith($tempalte);
             }
         }
+            setTimeout(arguments.callee, 60000);
+    })();
     </script>
 </body>
 </html>
