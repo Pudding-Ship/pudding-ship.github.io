@@ -55,12 +55,14 @@
                 ranked = rankings.filter(function (player) {
                     return player.id == value;
                 })[0];
-                //Create new virtual template.
-                var $p_template = $(p_template);
-                $p_template.find(".player_name").text(ranked.name);
-                $p_template.find(".player_rank").text(~~(ranked.live_rating));
-                //Attach the players template to the game template
-                $tempalte.find(".game_players").append($p_template);
+                if (typeof ranked !== 'undefined') {
+                    //Create new virtual template.
+                    var $p_template = $(p_template);
+                    $p_template.find(".player_name").text(ranked.name);
+                    $p_template.find(".player_rank").text(~~(ranked.live_rating));
+                    //Attach the players template to the game template
+                    $tempalte.find(".game_players").append($p_template);
+                }
             });
             
             //Either appends or replaces the game template
