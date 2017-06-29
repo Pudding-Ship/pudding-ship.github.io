@@ -1,0 +1,44 @@
+        body {
+            font-family: 'Titillium Web';
+            background-image: url('/assets/background.png');
+            margin: 0px;
+            font-size: 18px;
+        }
+            h1 {
+                font-weight: 600;
+                font-size: 48px;
+                margin-bottom: 5px;
+                margin-top: 0px;
+            }
+        
+            #header {
+                text-align: center;
+                background-color: #bb49d1;
+                background-color:rgba(187, 73, 209, 0.6);
+                color: rgb(230,230,230);
+                font-size: 25px;
+                -webkit-box-shadow: 0px 0px 40px 0px rgba(0,0,0,0.5);
+-moz-box-shadow: 0px 0px 40px 0px rgba(0,0,0,0.5);
+box-shadow: 0px 0px 40px 0px rgba(0,0,0,0.5);
+            }
+            #main_title {
+                font-size: 50px;
+                font-weight: 600;
+            }
+            .nav_item {
+                display: inline-block;
+                padding: 15px;
+            }
+            
+            #main {
+                margin: auto;
+                width: 80%;
+                margin-top: 50px;
+                background-color:rgba(139, 55, 155, 0.6);
+                padding: 35px;
+                color: rgb(230,230,230);
+            }
+            a {
+                  color: inherit;
+                  text-decoration: inherit;
+                }
