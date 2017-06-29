@@ -1,86 +1,12 @@
-﻿<html><div id="page">
-    <h1>DEATHMATCH VISION</h1>
-    This is a list of all the currently running deathmatch games in America. Beneath each game is also a list of all the ranked ECP players who are in the game, along with their rank. This can be useful if you want to find a game that will yeild extra points, or you want to catch a player you think is switching servers to avoid you.
-    <div id="game_list">
-        
-    </div>
-    <script id="game_template" type="text/x-custom-template" data-game="">
-        <div class="game">
-            <a href="" class="game_link">
-                <h2 class="game_server"></h2>
-            </a>
-                <div class="game_players">
-
-                </div>
-        </div>
-    </script>
-    <script id="player_template" type="text/x-custom-template">
-        <div class="player" player-data="">
-            <b class="player_name"></b> (<span class="player_rank"></span>)
-        </div>
-    </script>
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
-            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-            crossorigin="anonymous"></script>
-    <script>
-    (function(){
-        jQuery.getJSON('http://starblast.io/rankings.json', function (rankings) {
-            jQuery.getJSON('http://starblast.io/simstatus.json', function (data) {
-                data.forEach(function (value, index) {
-                        var location = value.location;
-                        value.systems.forEach(function (value, index) {
-                            if (value.mode == "deathmatch") {
-                                addGame(value, rankings.ratings.America, location);
-                            }
-                        });
-                });
-            })
-        });
-
-        
-        function addGame(game,rankings, location) {
-            //Fetch tempalte
-            var template = $("#game_template").text();
-            var $tempalte = $(template);
-            
-            //Alter values in the virtual template markup.
-            $tempalte.find(".game_link").attr("href", 'http://starblast.io/#' + game.id);
-            $tempalte.find(".game_server").text(location + ': ' + game.name);
-            $tempalte.attr("data-game",game.id);
-            
-            //Fetch text
-            var p_template = $("#player_template").text();
-            game.players_list.forEach(function (value, index) {
-                //Find the player with the correct id.
-                ranked = rankings.filter(function (player) {
-                    return player.id == value;
-                })[0];
-                if (typeof ranked !== 'undefined') {
-                    //Create new virtual template.
-                    var $p_template = $(p_template);
-                    $p_template.find(".player_name").text(ranked.name);
-                    $p_template.find(".player_rank").text(~~(ranked.live_rating));
-                    //Attach the players template to the game template
-                    $tempalte.find(".game_players").append($p_template);
-                }
-            });
-            
-            //Either appends or replaces the game template
-            var $el = $("#game_list .game[data-game=" + game.id + "]");
-            if (!$el.length) {
-                $("#game_list").append($tempalte);
-            } else {
-                $el.replaceWith($tempalte);
-            }
-        }
-            setTimeout(arguments.callee, 60000);
-    })();
-    </script>
-</div>
-   </div> 
+﻿<html>
+<head>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"
             integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
             crossorigin="anonymous"></script>
     </script>
 <script src="/assets/build.js">
-</script></html>
+</script>
+</head>
+<div id="page" >
+</div>
+</html>
