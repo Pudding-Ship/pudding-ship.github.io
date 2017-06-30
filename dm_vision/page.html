@@ -1,5 +1,5 @@
 <h1>DEATHMATCH VISION</h1>
-    This is a list of all the currently running deathmatch games. Beneath each game is also a list of all the ranked ECP players who are in the game, along with their rank. This can be useful if you want to find a game that will yeild extra points, or you want to catch a player you think is switching servers to avoid you.
+    This is a list of all the currently running deathmatch games. Beneath each game is also a list of all the ranked ECP players who are in the game, along with their rank. This can be useful if you want to find a game that will yeild extra points, or you want to catch a player you think is switching servers to avoid you. <br><b id=reload style="cursor:pointer;">Refresh ↻</b>
     <div id="region_list">
         
     </div>
@@ -30,7 +30,10 @@
             integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
             crossorigin="anonymous"></script>
     <script>
-    (function(){
+    $(document).on('click','#reload', function () {
+        vision();
+    });
+    function vision (){
         regions = {};
         jQuery.getJSON('http://starblast.io/rankings.json', function (rankings) {
             jQuery.getJSON('http://starblast.io/simstatus.json', function (data) {                
@@ -95,6 +98,9 @@
             region.find(".region_games").append($template)
             
         }
+    }   
+    (function () {
+            vision();
             setTimeout(arguments.callee, 60000/4);
     })();
     </script>
