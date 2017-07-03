@@ -14,7 +14,7 @@
     <script id="game_template" type="text/x-custom-template" >
         <div class="game" data-game="">
             <a href="" class="game_link">
-                <h3 class="game_server"></h2>
+                <h3 style="display: inline-block;" class="game_server"></h3> <i ><span class="player_count"></span> Players</i>
             </a>
                 <div class="game_players" style="margin-left: 15px;">
 
@@ -76,6 +76,7 @@
             //Alter values in the virtual template markup.
             $template.find(".game_link").attr("href", 'http://starblast.io/#' + game.id);
             $template.find(".game_server").text(game.name);
+            $template.find(".player_count").text(game.players);
             $template.attr("data-game",game.id);
             
             //Fetch text
